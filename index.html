@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#7c3aed">
+  <meta name="description" content="Connect Plus Primary 3 - First Term interactive learning app for Mrs. Mona Harb">
+  <title>Connect Plus Primary 3 | Mrs. Mona Harb</title>
+  <link rel="icon" type="image/svg+xml" href="assets/icons/app-icon.svg">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <svg class="svg-sprite" aria-hidden="true">
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 11 9-7 9 7v9h-6v-6H9v6H3z"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7z"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5.5A3.5 3.5 0 0 1 7.5 2H12v18H7.5A3.5 3.5 0 0 0 4 23zM20 5.5A3.5 3.5 0 0 0 16.5 2H12v18h4.5A3.5 3.5 0 0 1 20 23z"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2.5 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-2.9-5.6 2.9 1.1-6.2L3 9.1l6.2-.9z"/></symbol>
+    <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M7 3h10v5a5 5 0 0 1-10 0zM9 19h6M12 13v6M7 5H3v2a4 4 0 0 0 4 4M17 5h4v2a4 4 0 0 1-4 4"/></symbol>
+    <symbol id="i-sound" viewBox="0 0 24 24"><path d="M4 10v4h4l5 4V6L8 10zM16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+    <symbol id="i-reset" viewBox="0 0 24 24"><path d="M20 7v5h-5M19 12a7 7 0 1 0-2 5"/></symbol>
+  </svg>
+
+  <div id="splash" class="splash" role="dialog" aria-modal="true" aria-labelledby="splashTitle">
+    <div class="splash-noise"></div>
+    <section class="splash-card">
+      <div class="splash-visual image-cover" data-cover="app-cover">
+        <div class="splash-visual-shade"></div>
+        <div class="cover-seal"><span>6</span><small>UNITS</small></div>
+        <div class="cover-caption">
+          <span class="micro-label light">YOUR INTERACTIVE BOOK</span>
+          <strong>Learn. Play. Shine.</strong>
+          <p>Colorful lessons, stories, sounds, and smart challenges.</p>
+        </div>
+      </div>
+      <div class="splash-form-wrap">
+        <span class="micro-label">MADE FOR PRIMARY 3 GIRLS</span>
+        <div class="course-mark" aria-hidden="true"><span>CP</span><small>3</small></div>
+        <h1 id="splashTitle">Connect Plus</h1>
+        <p class="splash-subtitle">Primary 3 · First Term</p>
+        <p class="teacher-name">Mrs. Mona Harb</p>
+        <label class="field">
+          <span>Student's name</span>
+          <input id="studentName" autocomplete="name" maxlength="42" placeholder="Write your name" required>
+        </label>
+        <label class="field">
+          <span>Class</span>
+          <input id="className" maxlength="20" placeholder="Example: 3A">
+        </label>
+        <button id="startBtn" class="btn btn-primary btn-large" type="button">
+          <span>Start My Journey</span><svg><use href="#i-arrow"/></svg>
+        </button>
+        <div id="resumeButtons" class="resume-buttons hidden">
+          <button class="btn btn-soft" data-action="resume-lesson" type="button">Continue Last Lesson</button>
+          <button class="btn btn-soft" data-action="resume-question" type="button">Continue Last Question</button>
+        </div>
+        <p class="splash-credit">Prepared for <strong>Mrs. Mona Harb</strong></p>
+      </div>
+    </section>
+  </div>
+
+  <div id="app" class="app-shell hidden">
+    <header class="topbar">
+      <button id="menuBtn" class="icon-btn mobile-only" type="button" aria-label="Open menu"><svg><use href="#i-menu"/></svg></button>
+      <button class="brand" type="button" data-action="dashboard" aria-label="Dashboard">
+        <span class="brand-mark">CP<small>3</small></span>
+        <span class="brand-copy"><b>Connect Plus</b><small>Primary 3 · Term 1</small></span>
+      </button>
+      <div class="topbar-spacer"></div>
+      <div class="top-stat"><svg><use href="#i-star"/></svg><span id="topStars">0</span></div>
+      <div class="top-stat coins"><span class="coin-dot">C</span><span id="topCoins">0</span></div>
+      <button id="soundBtn" class="icon-btn" type="button" aria-label="Toggle sound"><svg><use href="#i-sound"/></svg></button>
+      <button class="btn teacher-btn" type="button" data-action="teacher"><svg><use href="#i-user"/></svg><span>Who Am I?</span></button>
+    </header>
+
+    <div id="scrim" class="scrim hidden"></div>
+    <aside id="sidebar" class="sidebar" aria-label="Course navigation"></aside>
+    <main id="main" class="main" tabindex="-1"></main>
+  </div>
+
+  <div id="teacherModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="teacherTitle">
+    <div class="modal-card teacher-modal-card">
+      <button class="icon-btn modal-close" type="button" data-action="close-teacher" aria-label="Close"><svg><use href="#i-close"/></svg></button>
+      <div class="teacher-visual image-cover" data-cover="teacher-cover">
+        <div class="teacher-visual-copy">
+          <span class="micro-label light">MEET YOUR TEACHER</span>
+          <h2 id="teacherTitle">Mrs. Mona Harb</h2>
+          <p>English Language Teacher</p>
+        </div>
+      </div>
+      <div class="teacher-body">
+        <p class="lead">Mrs. Mona Harb is a graduate of the Faculty of Al-Alsun, Ain Shams University. Her first language of specialization is Spanish, and her second language is English. She has extensive experience in teaching English.</p>
+        <div class="bio-grid">
+          <article><span>Education</span><b>Faculty of Al-Alsun, Ain Shams University</b></article>
+          <article><span>First Language</span><b>Spanish</b></article>
+          <article><span>Second Language</span><b>English</b></article>
+          <article><span>Experience</span><b>Extensive experience in teaching English</b></article>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="confirmModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <div class="modal-card confirm-card">
+      <div class="confirm-icon"><svg><use href="#i-reset"/></svg></div>
+      <h2 id="confirmTitle">Reset all progress?</h2>
+      <p>This will remove saved lessons, XP, stars, coins, and quiz progress on this device.</p>
+      <div class="button-row center">
+        <button class="btn btn-ghost" type="button" data-action="cancel-reset">Cancel</button>
+        <button class="btn btn-danger" type="button" data-action="confirm-reset">Reset Progress</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+  <div id="celebration" class="celebration" aria-hidden="true"></div>
+
+  <script src="app-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
