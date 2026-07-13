@@ -64,13 +64,15 @@ function crumbs(parts){
 
 function hydrateCovers(root=document){
   root.querySelectorAll("[data-cover]").forEach(element=>{
-    const path=COVER_MAP[element.dataset.cover];if(!path)return;
+    const coverKey=element.dataset.cover;
+    const path=window.EMBEDDED_COVERS?.[coverKey]||COVER_MAP[coverKey];if(!path)return;
     let overlay="linear-gradient(160deg,rgba(67,30,104,.03),rgba(67,30,104,.20))";
     if(element.classList.contains("dashboard-hero")||element.classList.contains("page-hero"))overlay="linear-gradient(90deg,rgba(48,22,77,.94) 0%,rgba(73,33,108,.73) 52%,rgba(73,33,108,.12))";
     if(element.classList.contains("reader-card"))overlay="linear-gradient(transparent 28%,rgba(31,17,44,.88))";
     if(element.classList.contains("teacher-visual"))overlay="linear-gradient(0deg,rgba(44,20,66,.83),rgba(71,33,103,.08))";
     if(element.classList.contains("splash-visual"))overlay="linear-gradient(180deg,rgba(48,22,77,.02) 35%,rgba(35,16,56,.72))";
     element.style.backgroundImage=`${overlay},url("${path}")`;
+    element.dataset.coverReady="true";
   });
 }
 
