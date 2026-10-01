@@ -1,6 +1,6 @@
-const CACHE="connect-plus-3-mona-v4";
+const CACHE="connect-plus-3-mona-v5";
 const CORE=[
-  "./","./index.html","./styles.css","./cover-assets-v4.js","./app-data.js","./app.js","./manifest.json",
+  "./","./index.html","./styles.css","./cover-assets-v4.js","./app-data.js","./app.js","./cloud-progress-bridge.js","./manifest.json",
   "./assets/icons/app-icon.svg","./assets/icons/icon-192.png","./assets/icons/icon-512.png","./assets/icons/apple-touch-icon.png",
   "./assets/covers/app-cover.webp","./assets/covers/teacher-cover.webp",
   ...Array.from({length:6},(_,index)=>`./assets/covers/unit-${index+1}.webp`),
