@@ -92,6 +92,12 @@ function init(){
   $("#teacherModal").addEventListener("click",event=>{if(event.target.id==="teacherModal")closeTeacher();});
   $("#confirmModal").addEventListener("click",event=>{if(event.target.id==="confirmModal")closeReset();});
   updateTopbar();
+  // The portal already owns the student account and restores this app's progress.
+  if(window.top!==window){
+    $("#splash").classList.add("hidden");
+    if(ensureApp())showDashboard();
+    else mainEl().textContent="Please reopen this application from your learning portal.";
+  }
   if("serviceWorker" in navigator&&location.protocol.startsWith("http"))navigator.serviceWorker.register("service-worker.js").catch(()=>{});
 }
 

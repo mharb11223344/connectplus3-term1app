@@ -1,4 +1,4 @@
-const CACHE="connect-plus-3-mona-v5";
+const CACHE="connect-plus-3-mona-v6";
 const CORE=[
   "./","./index.html","./styles.css","./cover-assets-v4.js","./app-data.js","./app.js","./cloud-progress-bridge.js","./manifest.json",
   "./assets/icons/app-icon.svg","./assets/icons/icon-192.png","./assets/icons/icon-512.png","./assets/icons/apple-touch-icon.png",
