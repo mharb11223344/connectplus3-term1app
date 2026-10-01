@@ -173,6 +173,8 @@ function celebrate(){
   setTimeout(()=>holder.innerHTML="",2300);
 }
 
+function portalUnitOpen(id){try{if(window.top===window)return true;const row=JSON.parse(localStorage.getItem('mona-unit-control-connectplus3-term1app')||'{}');return !Array.isArray(row.openUnits)||row.openUnits.includes(Number(id))}catch{return true}}
+function portalUnitMessage(){toast('This unit is closed by Mrs. Mona Harb.');}
 function unitCompleted(unit){return unit.lessons.every(lesson=>state.completed.includes(lesson.id));}
 function unitUnlocked(unitId){return unitId===1||unitCompleted(UNITS.find(unit=>unit.id===unitId-1));}
 function lessonUnlocked(lessonId){
@@ -227,6 +229,7 @@ function showDashboard(){
 }
 
 function showUnit(unitId){
+  if(!portalUnitOpen(unitId)){portalUnitMessage();return;}
   const unit=UNITS.find(item=>item.id===unitId);if(!unit)return;
   if(!unitUnlocked(unitId)){toast("Complete the previous unit first.");return;}
   const progress=unitProgress(unit);
@@ -247,6 +250,7 @@ const SECTION_INFO={
 };
 function getItem(id){return ALL_CONTENT.find(item=>item.id===id);}
 function showLesson(id){
+  const gatedItem=getItem(id);if(gatedItem?.kind==='unit'&&!portalUnitOpen(gatedItem.unitId)){portalUnitMessage();return;}
   const item=getItem(id);if(!item)return;if(!itemUnlocked(item)){toast("Complete the previous lesson first.");return;}
   currentItem=item;state.lastLesson=id;saveState(false);
   const unit=item.kind==="unit"?UNITS.find(entry=>entry.id===item.unitId):null;
@@ -257,6 +261,7 @@ function showLesson(id){
 }
 
 function showSection(id,section){
+  const gatedItem=getItem(id);if(gatedItem?.kind==='unit'&&!portalUnitOpen(gatedItem.unitId)){portalUnitMessage();return;}
   const item=getItem(id);if(!item)return;currentItem=item;state.lastLesson=id;state.lastSection=section;saveState(false);
   if(section==="practice"){startQuizFor(id,"lesson");return;}
   let body="";const info=SECTION_INFO[section];
@@ -292,11 +297,13 @@ function startQuizFor(id,mode="lesson",resume=false){
   beginQuiz({key,title:`${item.title} Practice`,mode:"lesson",itemId:id,questions},resume);
 }
 function startUnitReview(unitId,resume=false){
+  if(!portalUnitOpen(unitId)){portalUnitMessage();return;}
   const unit=UNITS.find(item=>item.id===unitId);if(!unit)return;if(!unitCompleted(unit)){toast("Complete all four lessons to unlock the unit review.");return;}
   beginQuiz({key:`unit:${unitId}`,title:`Unit ${unitId}: ${unit.title} Review`,mode:"unit",unitId,questions:questionPool(unit.lessons,50,unitId*307)},resume);
 }
 function startMegaReview(id,resume=false){
   const groups={review1:[1,2,3],review2:[4,5,6]};const unitIds=groups[id];if(!unitIds)return;
+  if(!unitIds.every(portalUnitOpen)){portalUnitMessage();return;}
   const selected=UNITS.filter(unit=>unitIds.includes(unit.id));if(!selected.every(unitCompleted)){toast("Complete the included units first.");return;}
   const items=selected.flatMap(unit=>unit.lessons);beginQuiz({key:`mega:${id}`,title:id==="review1"?"Review 1: Units 1–3":"Review 2: Units 4–6",mode:"mega",reviewId:id,questions:questionPool(items,50,hash(id))},resume);
 }
