@@ -24,6 +24,7 @@ function loadState(){
 }
 function saveState(updateNavigation=true){
   localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+  if(window.top!==window)window.parent.postMessage({type:'mona:progress-changed',appId:'connectplus3-term1app'},location.origin);
   updateTopbar();
   if(updateNavigation)renderSidebar();
 }
@@ -297,27 +298,27 @@ function questionPool(items,count,seed){
   const pool=items.flatMap(item=>makeLessonQuestions(item).map(question=>({...question,source:item.title})));
   return shuffle(unique(pool,question=>question.type+question.text+String(question.answer||"")+JSON.stringify(question.pairs||[])),seed).slice(0,count);
 }
-function startQuizFor(id,mode="lesson",resume=false){
+function startQuizFor(id,mode="lesson",resume=true){
   const item=getItem(id);if(!item)return;currentItem=item;
   const key=`lesson:${id}`,questions=makeLessonQuestions(item);
   beginQuiz({key,title:`${item.title} Practice`,mode:"lesson",itemId:id,questions},resume);
 }
-function startUnitReview(unitId,resume=false){
+function startUnitReview(unitId,resume=true){
   if(!portalUnitOpen(unitId)){portalUnitMessage();return;}
   const unit=UNITS.find(item=>item.id===unitId);if(!unit)return;if(!unitCompleted(unit)){toast("Complete all four lessons to unlock the unit review.");return;}
   beginQuiz({key:`unit:${unitId}`,title:`Unit ${unitId}: ${unit.title} Review`,mode:"unit",unitId,questions:questionPool(unit.lessons,50,unitId*307)},resume);
 }
-function startMegaReview(id,resume=false){
+function startMegaReview(id,resume=true){
   const groups={review1:[1,2,3],review2:[4,5,6]};const unitIds=groups[id];if(!unitIds)return;
   if(!unitIds.every(portalUnitOpen)){portalUnitMessage();return;}
   const selected=UNITS.filter(unit=>unitIds.includes(unit.id));if(!selected.every(unitCompleted)){toast("Complete the included units first.");return;}
   const items=selected.flatMap(unit=>unit.lessons);beginQuiz({key:`mega:${id}`,title:id==="review1"?"Review 1: Units 1–3":"Review 2: Units 4–6",mode:"mega",reviewId:id,questions:questionPool(items,50,hash(id))},resume);
 }
-function beginQuiz(context,resume=false){
+function beginQuiz(context,resume=true){
   clearTimeout(nextTimer);answerLocked=false;orderBuild=[];quizContext={...context,questions:undefined};currentQuiz=context.questions;const saved=state.quizProgress[context.key];
-  currentQuestion=resume&&saved?Math.min(saved.index,currentQuiz.length-1):0;
+  currentQuestion=resume&&saved?Math.min(Math.max(0,Number(saved.index)||0),currentQuiz.length):0;
   if(!resume||!saved)state.quizProgress[context.key]={index:0,score:0,total:currentQuiz.length,answered:0};
-  state.activeQuiz={key:context.key,title:context.title,mode:context.mode,itemId:context.itemId||null,unitId:context.unitId||null,reviewId:context.reviewId||null};saveState(false);renderQuestion();
+  state.activeQuiz={key:context.key,title:context.title,mode:context.mode,itemId:context.itemId||null,unitId:context.unitId||null,reviewId:context.reviewId||null};saveState(false);if(currentQuestion>=currentQuiz.length)showQuizResult();else renderQuestion();
 }
 function restoreActiveQuiz(){
   const active=state.activeQuiz;if(!active)return false;
@@ -363,6 +364,8 @@ function checkMatch(){
 function finishAnswer(correct,explanation){
   if(answerLocked)return;answerLocked=true;const progress=state.quizProgress[quizContext.key];progress.answered++;state.solved++;
   if(correct){progress.score++;state.correct++;state.xp+=10;state.coins+=2;state.vocabCorrect++;tone("good");}else tone("bad");
+  // Save the next unanswered position before the feedback timer or navigation.
+  progress.index=currentQuestion+1;
   const feedback=$("#feedback");feedback.className=`feedback ${correct?"good":"bad"}`;feedback.innerHTML=`<b>${correct?"Correct! Well done.":"Not quite."}</b> ${esc(explanation||"")}`;
   $("#nextQuestionBtn")?.classList.remove("hidden");state.quizProgress[quizContext.key]=progress;saveState(false);updateTopbar();
   if(correct&&progress.answered%5===0)celebrate();
